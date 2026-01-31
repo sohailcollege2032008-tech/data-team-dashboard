@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import ApplicantGrid from './components/ApplicantGrid';
 import DetailModal from './components/DetailModal';
@@ -38,6 +39,35 @@ function App() {
     }
   };
 
+  // React Router
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const groupParam = searchParams.get('group');
+    if (groupParam && uniqueGroups.includes(groupParam)) {
+      setFilter(groupParam);
+    }
+  }, [searchParams, uniqueGroups, setFilter]); // Sync URL to state on mount/change
+
+  const handleFilterChange = (newFilter) => {
+    setFilter(newFilter);
+    // If it's a group, update URL. If 'all' or role, remove param or set accordingly?
+    // Let's keep it simple: if newFilter is in uniqueGroups, set ?group=...
+    // Otherwise remove it.
+    if (uniqueGroups.includes(newFilter)) {
+      setSearchParams({ group: newFilter });
+    } else {
+      setSearchParams({});
+    }
+  };
+
+  const handleShareGroup = (groupName) => {
+    const url = `${window.location.origin}?group=${encodeURIComponent(groupName)}`;
+    navigator.clipboard.writeText(url).then(() => {
+      alert(`Link for group "${groupName}" copied to clipboard! 🔗\nShare it with anyone.`);
+    });
+  };
+
   const handleGroupSelected = () => {
     if (selectedIds.length === 0) return;
     const name = prompt(`Enter group name for ${selectedIds.length} applicants:`);
@@ -62,9 +92,10 @@ function App() {
     <div className="dashboard-layout">
       <Sidebar
         currentFilter={filter}
-        onFilterChange={setFilter}
+        onFilterChange={handleFilterChange}
         counts={stats}
         groups={uniqueGroups}
+        onShareGroup={handleShareGroup}
       />
 
       <main className="main-content">

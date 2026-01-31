@@ -7,7 +7,8 @@ import {
   PenTool,
   BookOpen,
   Monitor,
-  Hash
+  Hash,
+  Share2
 } from 'lucide-react';
 
 const filters = [
@@ -19,7 +20,7 @@ const filters = [
   { id: 'Notebooklm', label: 'AI / NotebookLM', icon: Monitor }, // Catch both spellings in logic
 ];
 
-const Sidebar = ({ currentFilter, onFilterChange, counts, groups = [] }) => {
+const Sidebar = ({ currentFilter, onFilterChange, counts, groups = [], onShareGroup }) => {
   return (
     <aside className="sidebar">
       <div className="logo-area">
@@ -59,18 +60,38 @@ const Sidebar = ({ currentFilter, onFilterChange, counts, groups = [] }) => {
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
               {groups.map(g => (
-                <button
-                  key={g}
-                  className={`nav-item ${currentFilter === g ? 'active' : ''}`}
-                  onClick={() => onFilterChange(g)}
-                  style={{ fontSize: '0.9rem' }}
-                >
-                  <Hash size={16} color={currentFilter === g ? "var(--accent-primary)" : "#64748b"} />
-                  <span style={{ flex: 1, marginLeft: '5px' }}>{g}</span>
-                  <span className="count-badge" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' }}>
-                    Group
-                  </span>
-                </button>
+                <div key={g} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <button
+                    className={`nav-item ${currentFilter === g ? 'active' : ''}`}
+                    onClick={() => onFilterChange(g)}
+                    style={{ fontSize: '0.9rem', flex: 1 }}
+                  >
+                    <Hash size={16} color={currentFilter === g ? "var(--accent-primary)" : "#64748b"} />
+                    <span style={{ flex: 1, marginLeft: '5px' }}>{g}</span>
+                    <span className="count-badge" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' }}>
+                      Group
+                    </span>
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onShareGroup(g); }}
+                    title="Share Group Link"
+                    style={{
+                      background: 'transparent',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: '6px',
+                      padding: '8px',
+                      cursor: 'pointer',
+                      color: '#94a3b8',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.color = '#3b82f6'}
+                    onMouseLeave={e => e.currentTarget.style.color = '#94a3b8'}
+                  >
+                    <Share2 size={14} />
+                  </button>
+                </div>
               ))}
             </div>
           </div>

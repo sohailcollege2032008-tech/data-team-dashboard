@@ -15,7 +15,8 @@ function App() {
     deleteApplicant,
     createGroup,
     removeGroup,
-    uniqueGroups
+    uniqueGroups,
+    loading
   } = useApplicants();
 
   const [selectedApplicant, setSelectedApplicant] = useState(null);
@@ -46,6 +47,14 @@ function App() {
       setIsSelectionMode(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#0f172a', color: '#94a3b8' }}>
+        <h2>Loading Dashboard...</h2>
+      </div>
+    );
+  }
 
   const totalShown = filteredApplicants.length;
 
